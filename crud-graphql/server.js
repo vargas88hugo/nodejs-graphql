@@ -2,7 +2,7 @@ const express = require('express');
 const { buildSchema } = require('graphql');
 const graphqlHTTP = require('express-graphql');
 
-const courses = require('./courses');
+let courses = require('./courses');
 
 const app = express();
 
@@ -19,19 +19,28 @@ const schema = buildSchema(`
     views: Int
   }
 
+  type Alert {
+    message: String
+  }
+
   type Query {
-    getCourses: [Course]
+    getCourses(page: Int, limit: Int = 1): [Course]
     getCourse(id: ID!): Course
   }
 
   type Mutation {
     addCourse(input: CourseInput): Course
     updateCourse(id: ID!, input: CourseInput): Course
+    deleteCourse(id: ID!): Alert
   }
 `);
 
 const root = {
-  getCourses() {
+  getCourses({ page, limit }) {
+    if (page !== undefined) {
+      return courses.slice(page * limit, (page + 1) * limit);
+    }
+
     return courses;
   },
   getCourse({ id }) {
@@ -53,6 +62,13 @@ const root = {
     course.views = views;
 
     return course;
+  },
+  deleteCourse({ id }) {
+    courses = courses.filter((course) => course.id != id);
+
+    return {
+      message: `The course with the index ${id} has been deleted`,
+    };
   },
 };
 
