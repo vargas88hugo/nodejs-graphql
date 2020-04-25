@@ -1,5 +1,6 @@
 const express = require('express');
 const { buildSchema } = require('graphql');
+const graphqlHTTP = require('express-graphql');
 
 const courses = require('./courses');
 
@@ -17,6 +18,21 @@ const schema = buildSchema(`
     getCourses: [Course]
   }
 `);
+
+const root = {
+  getCourses() {
+    return courses;
+  },
+};
+
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema,
+    rootValue: root,
+    graphiql: true,
+  })
+);
 
 app.get('/', (req, res) => {
   res.json(courses);
