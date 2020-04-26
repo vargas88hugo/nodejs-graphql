@@ -10,24 +10,45 @@ const typeDefs = `
     views: Int
   }
 
+  input CourseInput {
+    title: String!
+    views: Int
+  }
+
   type Query {
     getCourses(page: Int, limit: Int = 1): [Course]
   }
+
+  type Mutation {
+    addCourse(input: CourseInput): Course
+  }
 `;
+
+const resolvers = {
+  Query: {
+    getCourses(obj, { page, limit }) {
+      if (page !== undefined) {
+        return courses.slice(page * limit, (page + 1) * limit);
+      }
+
+      return courses;
+    },
+  },
+  Mutation: {
+    addCourse(obj, { input }) {
+      const id = String(courses.length + 1);
+      const course = { id, ...input };
+
+      courses.push(course);
+
+      return course;
+    },
+  },
+};
 
 const schema = makeExecutableSchema({
   typeDefs,
-  resolvers: {
-    Query: {
-      getCourses(obj, { page, limit }) {
-        if (page !== undefined) {
-          return courses.slice(page * limit, (page + 1) * limit);
-        }
-
-        return courses;
-      },
-    },
-  },
+  resolvers,
 });
 
 const server = new ApolloServer({
