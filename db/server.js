@@ -5,7 +5,10 @@ const { makeExecutableSchema } = require('graphql-tools');
 const { merge } = require('lodash');
 
 const courseTypeDefs = require('./types/course.types');
+const userTypeDefs = require('./types/user.types');
+
 const courseResolvers = require('./resolvers/course.resolvers');
+const userResolvers = require('./resolvers/user.resolvers');
 
 mongoose.connect(
   'mongodb://localhost/graphql',
@@ -35,8 +38,8 @@ const typeDefs = `
 const resolvers = {};
 
 const schema = makeExecutableSchema({
-  typeDefs: [typeDefs, courseTypeDefs],
-  resolvers: merge(resolvers, courseResolvers),
+  typeDefs: [typeDefs, courseTypeDefs, userTypeDefs],
+  resolvers: merge(resolvers, courseResolvers, userResolvers),
 });
 
 app.use(express.json());
