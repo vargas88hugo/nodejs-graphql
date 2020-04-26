@@ -18,6 +18,14 @@ module.exports = {
 
       return user;
     },
+    async logIn(obj, { input }) {
+      try {
+        return (user = User.authenticate(input));
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    },
   },
   User: {
     async courses(u) {
