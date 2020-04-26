@@ -17,17 +17,11 @@ module.exports = {
 
       return course;
     },
-    updateCourse(obj, { id, input }) {
-      const { title, views } = input;
-      const course = courses.find((course) => course.id == id);
-
-      course.title = title;
-      course.views = views;
-
-      return course;
+    async updateCourse(obj, { id, input }) {
+      return await Course.findByIdAndUpdate(id, input);
     },
-    deleteCourse(obj, { id }) {
-      courses = courses.filter((course) => course.id != id);
+    async deleteCourse(obj, { id }) {
+      await Course.deleteOne({ _id: id });
 
       return {
         message: `The course with the index ${id} has been deleted`,
