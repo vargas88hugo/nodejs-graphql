@@ -15,12 +15,19 @@ const typeDefs = `
     views: Int
   }
 
+  type Alert {
+    message: String
+  }
+
   type Query {
     getCourses(page: Int, limit: Int = 1): [Course]
+    getCourse(id: ID!): Course
   }
 
   type Mutation {
     addCourse(input: CourseInput): Course
+    updateCourse(id: ID!, input: CourseInput): Course
+    deleteCourse(id: ID!): Alert
   }
 `;
 
@@ -33,6 +40,9 @@ const resolvers = {
 
       return courses;
     },
+    getCourse(obj, { id }) {
+      return courses.find((course) => id == course.id);
+    },
   },
   Mutation: {
     addCourse(obj, { input }) {
@@ -42,6 +52,22 @@ const resolvers = {
       courses.push(course);
 
       return course;
+    },
+    updateCourse(obj, { id, input }) {
+      const { title, views } = input;
+      const course = courses.find((course) => course.id == id);
+
+      course.title = title;
+      course.views = views;
+
+      return course;
+    },
+    deleteCourse(obj, { id }) {
+      courses = courses.filter((course) => course.id != id);
+
+      return {
+        message: `The course with the index ${id} has been deleted`,
+      };
     },
   },
 };
