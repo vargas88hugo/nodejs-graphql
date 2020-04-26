@@ -1,22 +1,19 @@
+const Course = require('../models/course');
+
 module.exports = {
   Query: {
-    getCourses(obj, { page, limit }) {
-      if (page !== undefined) {
-        return courses.slice(page * limit, (page + 1) * limit);
-      }
-
-      return courses;
+    async getCourses(obj, { page, limit }) {
+      return await Course.find();
     },
-    getCourse(obj, { id }) {
-      return courses.find((course) => id == course.id);
+    async getCourse(obj, { id }) {
+      return await Course.findById(id);
     },
   },
   Mutation: {
-    addCourse(obj, { input }) {
-      const id = String(courses.length + 1);
-      const course = { id, ...input };
+    async addCourse(obj, { input }) {
+      const course = new Course(input);
 
-      courses.push(course);
+      await course.save();
 
       return course;
     },
