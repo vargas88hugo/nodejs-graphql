@@ -2,8 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { graphqlExpress, graphiqlExpress } = require('graphql-server-express');
 const { makeExecutableSchema } = require('graphql-tools');
+const { merge } = require('lodash');
 
 const courseTypeDefs = require('./types/course.types');
+const courseResolvers = require('./resolvers/course.resolvers');
 
 mongoose.connect(
   'mongodb://localhost/graphql',
@@ -30,9 +32,11 @@ const typeDefs = `
   }
 `;
 
+const resolvers = {};
+
 const schema = makeExecutableSchema({
   typeDefs: [typeDefs, courseTypeDefs],
-  resolvers: {},
+  resolvers: merge(resolvers, courseResolvers),
 });
 
 app.use(express.json());
