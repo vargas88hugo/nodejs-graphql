@@ -17,7 +17,17 @@ const typeDefs = `
 
 const schema = makeExecutableSchema({
   typeDefs,
-  resolvers: {},
+  resolvers: {
+    Query: {
+      getCourses(obj, { page, limit }) {
+        if (page !== undefined) {
+          return courses.slice(page * limit, (page + 1) * limit);
+        }
+
+        return courses;
+      },
+    },
+  },
 });
 
 const server = new ApolloServer({
