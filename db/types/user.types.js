@@ -3,7 +3,8 @@ module.exports = `
     id: ID!
     email: String!
     hashedPassword: String
-    token: String
+    token: String,
+    courses: [Course]
   }
 
   extend type Query {
