@@ -8,6 +8,12 @@ const UserSchema = new Schema({
     type: String,
   },
   token: String,
+  courses: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Course',
+    },
+  ],
 });
 
 module.exports = User = mongoose.model('User', UserSchema);
