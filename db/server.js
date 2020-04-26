@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const { graphqlExpress, graphiqlExpress } = require('graphql-server-express');
 const { makeExecutableSchema } = require('graphql-tools');
 
+const courseTypeDefs = require('./types/course.types');
+
 mongoose.connect(
   'mongodb://localhost/graphql',
   {
@@ -29,7 +31,7 @@ const typeDefs = `
 `;
 
 const schema = makeExecutableSchema({
-  typeDefs,
+  typeDefs: [typeDefs, courseTypeDefs],
   resolvers: {},
 });
 
