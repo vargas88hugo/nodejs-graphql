@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const Schema = mongoose.Schema;
 
@@ -36,6 +37,8 @@ UserSchema.statics.authenticate = async function ({ email, password }) {
   const result = await bcrypt.compare(password, user.hashedPassword);
 
   if (!result) throw new Error('Email or password are wrong');
+
+  user.token = jwt.sign({ id: user.id }, 'no_secret_enjoy');
 
   return user;
 };
